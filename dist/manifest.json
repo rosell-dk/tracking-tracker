@@ -1,0 +1,29 @@
+{
+    "manifest_version": 3,
+    "name": "Tracking geiger counter",
+    "description": "Visualizing tracking activity (shock effect therapy)",
+    "version": "1.0",
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": "icon.png"
+    },
+    "permissions": [
+      "webRequest",
+      "scripting"
+    ],
+    "host_permissions": [
+      "*://*/*"
+    ],
+    "background": {
+      "service_worker": "service-worker.js"
+    },
+    "content_scripts": [
+      {
+        "js": ["content.js"],
+        "matches": [
+          "<all_urls>"
+        ]
+
+      }
+    ]
+}
