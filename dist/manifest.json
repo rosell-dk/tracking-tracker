@@ -1,6 +1,7 @@
 {
+    "author": "Bjørn Rosell",
     "manifest_version": 3,
-    "name": "Tracking geiger counter",
+    "name": "Tracking tracker",
     "description": "Visualizing tracking activity (shock effect therapy)",
     "version": "1.0",
     "action": {
@@ -15,7 +16,8 @@
       "*://*/*"
     ],
     "background": {
-      "service_worker": "service-worker.js"
+      "service_worker": "service-worker.js",
+      "type": "module"
     },
     "content_scripts": [
       {

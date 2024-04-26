@@ -1,7 +1,8 @@
-function displayText(text) {
+function displayText(details, tracker, category) {
+
     // Create a text element
     var textElement = document.createElement('div');
-    textElement.innerText = text;
+    textElement.innerText = tracker.name + ' (' + category.name + ')';
 
     // Apply styles to the text element
     var top = Math.floor(Math.random() * 100);
@@ -23,7 +24,7 @@ function displayText(text) {
     textElement.style.fontSize = '24px';
     textElement.style.fontWeight = 'bold';
     textElement.style.color = 'white';
-    textElement.style.backgroundColor = 'rgba(0, 0, 0, 0.65)';
+    textElement.style.backgroundColor = category.color;
     textElement.style.padding = '20px';
     textElement.style.borderRadius = '10px';
     textElement.style.opacity = '0';
@@ -53,6 +54,10 @@ function displayText(text) {
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         var url = new URL(request.details.url);
-        displayText(url.hostname + url.pathname);
+
+        var category = request.tracker.category;
+        if ((category !== 'cdn') && (category !== 'hosting')) {
+            displayText(request.details, request.tracker, request.category);
+        }
     }
 );

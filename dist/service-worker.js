@@ -1,39 +1,57 @@
 
-var regexs = [
-    '.*clarity.ms',  // ie 'https://x.clarity.ms/collect' or 'https://c.clarity.ms/c.gif
-    '.*v2/track', // ie https://dc.services.visualstudio.com/v2/track
-    '.*.collect.js', // ie https://7237466.collect.igodigital.com/collect.js
-    'fbevents', // https://connect.facebook.net/en_US/fbevents.js'
-    'googletagmanager.*gtm', // https://www.googletagmanager.com/gtm.js?id=GTM-TPRSNTR&gtm_auth=w4ERo3HXKXOSNKX0IHeuSQ&gtm_preview=env-2&gtm_cookies_win=x
-    'doubleclick\.net.*gpt\.js', // https://securepubads.g.doubleclick.net/tag/js/gpt.js
-    '.*analytics.*insight', // https://snap.licdn.com/li.lms-analytics/insight.min.js
-    '\.ads\.', // https://px.ads.linkedin.com/collect?v=2
-    '.*facebook.com/tr/', // https://www.facebook.com/tr/?id=1445285039056800&
-    'facebook.com.*trigger', // https://www.facebook.com/privacy_sandbox/pixel/register/trigger/?id=1445285039056800&ev=PageView&...
-    'pol-statistics.com.*tb=event', // https://soma.pol-statistics.com/?tb=event
-    'getflowbox.com/events', // https://a.getflowbox.com/events
-]
+import { trackerDb } from './trackerdb.js';
 
-function testURLAgainstRegexs(url) {
-    for (var i = 0; i < regexs.length; i++) {
-        var pattern = new RegExp(regexs[i]);
-        if (pattern.test(url)) {
-            return true;
+function getTracker(url) {
+    var u = new URL(url);
+    var hostPath = u.hostname + u.pathname;
+    var domainNameNoSubdomain = u.hostname.split('.').slice(-2).join('.');
+
+    var trackerName = trackerDb.domains[u.hostname] || trackerDb.domains[domainNameNoSubdomain];
+    if (trackerName) {
+        var tracker = trackerDb.patterns[trackerName];
+        if (!tracker) {
+            return null;
+        }
+
+        if (!tracker.filters || (tracker.filters.length == 0)) {
+            return tracker;
+        }
+        for (var j=0; j<tracker.filters.length; j++) {
+            var filter = tracker.filters[j];
+
+            // If the filter is a regular expression, test it against the URL
+            if (filter.startsWith('/') && filter.endsWith('/')) {
+                var regex = new RegExp(filter.slice(1, -1));
+                if (regex.test(hostPath)) {
+                    return tracker;
+                }
+            } else if (filter.startsWith('||')) {
+                // If the filter is a network filter rule, check if it matches the URL
+                var networkFilter = filter.slice(2); // Remove the leading "||"
+                if (networkFilter.endsWith("^$3p")) {
+                    networkFilter = networkFilter.slice(0, -4); // Remove the trailing "^$3p"
+                    // TODO: This filter should only be applied if third-party. So we should check against current domain
+                    // and continue if the filter is the same as the domain of the current page
+                }
+                if (hostPath.indexOf(networkFilter) >= 0) {
+                    return tracker;
+                }
+            }
         }
     }
-    return false;
+    return null;
 }
 
 chrome.webRequest.onBeforeRequest.addListener(
     function(details) {
-        var url = new URL(details.url);
-
-        if (testURLAgainstRegexs(url.hostname + url.pathname)) {            
+        const tracker = getTracker(details.url);
+        if (tracker) {
+            // console.log(tracker.name + '(' + tracker.category + ')' + details.url);
             (async () => {
                 const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
     
                 try {
-                    const response = await chrome.tabs.sendMessage(tab.id, {details: details});
+                    const response = await chrome.tabs.sendMessage(tab.id, {details: details, tracker: tracker, category: trackerDb.categories[tracker.category]});
                 } catch (e) {
                     // silently fail
                 }
@@ -43,4 +61,3 @@ chrome.webRequest.onBeforeRequest.addListener(
     { urls: ["<all_urls>"] },
     []
 );
-

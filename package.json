@@ -1,0 +1,27 @@
+{
+  "name": "tracking-tracker",
+  "version": "1.0.0",
+  "description": "Visualizing tracking activity (shock effect therapy)",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rosell-dk/tracking-tracker.git"
+  },
+  "keywords": [
+    "tracking",
+    "creepy"
+  ],
+  "author": "Bjørn Rosell",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rosell-dk/tracking-tracker/issues"
+  },
+  "homepage": "https://github.com/rosell-dk/tracking-tracker#readme"
+}

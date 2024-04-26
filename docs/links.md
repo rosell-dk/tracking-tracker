@@ -22,6 +22,8 @@ https://stackoverflow.com/questions/27496465/how-can-i-play-sound-in-a-chrome-ex
 
 
 Lists of tracking urls:
+https://github.com/ghostery/trackerdb
+https://github.com/ghostery/trackerdb/blob/main/db/patterns/google_tag_manager.eno
 https://easylist.to/
 
 
