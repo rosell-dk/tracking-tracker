@@ -34,6 +34,4 @@ fs.readFile('src/trackerdb.json', 'utf8', (err, data) => {
     } catch (err) {
         console.error('Error parsing JSON data:', err);
     }
-
-
 });

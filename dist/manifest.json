@@ -5,7 +5,6 @@
     "description": "Visualizing tracking activity (shock effect therapy)",
     "version": "1.0",
     "action": {
-      "default_popup": "popup.html",
       "default_icon": "icon.png"
     },
     "permissions": [
@@ -25,7 +24,13 @@
         "matches": [
           "<all_urls>"
         ]
-
+      }
+    ],
+    "web_accessible_resources": [
+      {
+        "resources": ["images/*"],
+        "extension_ids": ["*"],
+        "matches": [ "*://*/*" ]
       }
     ]
 }

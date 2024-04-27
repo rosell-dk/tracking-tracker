@@ -15,3 +15,9 @@ Standard sounds to choose from:
 
 # Visuals
 Customize visual appearence
+
+Logo option: Pop up logo of organization instead of text box (for largest organizations only)
+
+
+# Log
+Easily see last 30 tracking requests, ie by hovering the plugin icon

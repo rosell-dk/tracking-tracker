@@ -1,5 +1,6 @@
 
 import { trackerDb } from './trackerdb.js';
+import { logos } from './logos.js';
 
 function getTracker(url) {
     var u = new URL(url);
@@ -46,12 +47,16 @@ chrome.webRequest.onBeforeRequest.addListener(
     function(details) {
         const tracker = getTracker(details.url);
         if (tracker) {
-            // console.log(tracker.name + '(' + tracker.category + ')' + details.url);
             (async () => {
                 const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
-    
+                const messageContent = {
+                    details: details, 
+                    tracker: tracker, 
+                    category: trackerDb.categories[tracker.category],
+                    logo: (logos[tracker.organization]) ? 'images/logos/' + tracker.organization + '.' + logos[tracker.organization] : null
+                }    
                 try {
-                    const response = await chrome.tabs.sendMessage(tab.id, {details: details, tracker: tracker, category: trackerDb.categories[tracker.category]});
+                    const response = await chrome.tabs.sendMessage(tab.id, messageContent);
                 } catch (e) {
                     // silently fail
                 }
