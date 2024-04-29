@@ -71,7 +71,6 @@ chrome.webRequest.onBeforeRequest.addListener(
         const tracker = getTracker(details.url);
         if (tracker) {
             (async () => {
-                const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
                 const messageContent = {
                     details: details, 
                     tracker: tracker, 
@@ -79,7 +78,7 @@ chrome.webRequest.onBeforeRequest.addListener(
                     logo: (logos[tracker.organization]) ? 'images/logos/' + tracker.organization + '.' + logos[tracker.organization] : null
                 }    
                 try {
-                    const response = await chrome.tabs.sendMessage(tab.id, messageContent);
+                    const response = await chrome.tabs.sendMessage(details.tabId, messageContent);
                 } catch (e) {
                     // silently fail
                 }
