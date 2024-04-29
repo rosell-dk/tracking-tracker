@@ -37,7 +37,30 @@ function getTracker(url) {
                 if (hostPath.indexOf(networkFilter) >= 0) {
                     return tracker;
                 }
+            } else if (filter.endsWith("^")) {
+                // cases like "/advertpro/servlet/view^"
+                if (hostPath.indexOf(filter.substr(a.length - 1)) >= 0) {
+                    return tracker;
+                }
+            } else {
+                // cases like "/timetracking/abtastytiming.gif"
+                if (hostPath.indexOf(filter) >= 0) {
+                    return tracker;
+                }
             }
+            // TODO:
+            // * can be a part of the pattern, it seems: "adoberesources.net/alloy/*/alloy^$3p"
+
+
+            /*
+            TODO: Add support for other types of filters.
+            I for example see these filters: 
+            - "/timetracking/abtastytiming.gif"
+            - "/acton/bn^" and "/advertpro/servlet/view^"
+            - "adbutler"
+            - "/addthis_widget.js"
+            - "/metrics\\..*\\.(com|net|org)\\/b\\/(s|ss)\\//"
+            */
         }
     }
     return null;
