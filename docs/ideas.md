@@ -1,3 +1,14 @@
+# onBeforeRequest?
+Right now we use onBeforeRequest.
+But maybe it is better to wait for the request to finish.
+This will allow the plugin to work in tandem with Ghostly, where it only displays those that slip through Ghostlys filters
+
+# Option to ignore patterns?
+Maybe provide option to ignore the patterns and simply "report" all requests to known tracking domains.
+This will allow the plugin to work in tandem with Ghostly, where it only displays those that slip through Ghostlys filters
+
+
+
 
 # Sound
 Optionally play sound
